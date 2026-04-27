@@ -28,3 +28,10 @@ class JinjaMacroContractsTest(TestCase):
 
         self.assertNotIn("columns.tests", macro)
         self.assertIn("column_tests", macro)
+
+    def test_snowflake_refresh_has_no_unused_branch_variables(self):
+        macro = read_macro("macros/plugins/snowflake/refresh_external_table.sql")
+
+        self.assertNotIn("set snowpipe", macro)
+        self.assertNotIn("set partitions", macro)
+        self.assertNotIn("set delta_format", macro)
