@@ -22,3 +22,9 @@ class JinjaMacroContractsTest(TestCase):
         empty_guard = macro.index("if partitions|length > 0")
         first_partition_lookup = macro.index("partitions[0]")
         self.assertLess(empty_guard, first_partition_lookup)
+
+    def test_fabric_nullity_uses_current_column_tests(self):
+        macro = read_macro("macros/plugins/fabric/create_external_table.sql")
+
+        self.assertNotIn("columns.tests", macro)
+        self.assertIn("column_tests", macro)
