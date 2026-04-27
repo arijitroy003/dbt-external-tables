@@ -15,3 +15,10 @@ class JinjaMacroContractsTest(TestCase):
 
         self.assertNotIn(".pop(", macro)
         self.assertIn("key not in excluded_options", macro)
+
+    def test_redshift_empty_partitions_checked_before_logging_range(self):
+        macro = read_macro("macros/plugins/redshift/helpers/add_partitions.sql")
+
+        empty_guard = macro.index("if partitions|length > 0")
+        first_partition_lookup = macro.index("partitions[0]")
+        self.assertLess(empty_guard, first_partition_lookup)
