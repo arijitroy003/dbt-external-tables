@@ -3,10 +3,11 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
+    {%- set excluded_options = ['uris', 'connection_name'] %}
     {%- set non_string_options = ['max_staleness'] %}
 
     {% if options is mapping and options.get('connection_name', none) %}
-        {% set connection_name = options.pop('connection_name') %}
+        {% set connection_name = options.get('connection_name') %}
     {% endif %}
     
     {%- set uris = [] -%}
@@ -41,7 +42,7 @@
         options (
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
-            {%- for key, value in options.items() if key != 'uris' %}
+            {%- for key, value in options.items() if key not in excluded_options %}
                 {%- if value is string and key not in non_string_options -%}
                 , {{key}} = '{{value}}'
                 {%- else -%}
